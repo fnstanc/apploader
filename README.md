@@ -1,2 +1,2 @@
 # apploader
-An plugin based app framework for C++.
+A plugin based app framework for C++.
