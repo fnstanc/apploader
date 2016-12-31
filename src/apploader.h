@@ -17,6 +17,7 @@ class AppLoader
 public:
     AppLoader() = default;
     ~AppLoader() = default;
+    void run();
 
 private:
     PluginManager plugin_manager_;

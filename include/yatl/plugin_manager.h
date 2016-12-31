@@ -8,13 +8,39 @@
 #ifndef _PLUGIN_MANAGER_H
 #define _PLUGIN_MANAGER_H
 
+#include "json.hpp"
 #include <memory>
 #include <string>
 #include <set>
+#include <map>
+#include <cassert>
 
 namespace yatl {
 
+using json = nlohmann::json;
+
 class DynLibManager;
+class Module;
+class Plugin;
+
+namespace internal {
+
+template<typename T, typename Base>
+struct IsBaseOf
+{
+    using Yes = char;
+    struct No { char dummy[2]; };
+    static Yes check(Base *base);
+    static No ckeck(...);
+    enum {
+        Value = sizeof(check((T *)0)) == sizeof(Yes)
+    };
+};
+
+} // namespace internal
+
+#define CHECK_DERIVES(T, Base) \
+    static_assert(yatl::internal::IsBaseOf<T, Base>::Value);
 
 class PluginManager
 {
@@ -23,17 +49,63 @@ public:
     ~PluginManager();
     PluginManager(const PluginManager &) = delete;
     PluginManager &operator=(const PluginManager &) = delete;
-    bool load(const std::string &lib_file);
-    bool unload(const std::string &lib_file);
+    bool init(const std::string &plugin_conf_file);
+    bool afterInit();
+    bool beforeUninit();
+    bool uninit();
+    void run();
+
+    // for plugin library load/unload
+    void install(Plugin *plugin);
+    void uninstall(Plugin *plugin);
+    Plugin *findPlugin(const std::string &name) const;
+
+    void registerModule(const std::string &name, Module *module);
+    void unregisterModule(const std::string &name);
+    Module *findModule(const std::string &name) const;
+
+    template <typename T>
+    void registerModule(T *module)
+    {
+        CHECK_DERIVES(T, Module);
+        registerModule(typeid(T).name(), module);
+    }
+
+    template <typename T>
+    void unregisterModule()
+    {
+        unregisterModule(typeid(T).name());
+    }
+
+    template <typename T>
+    T *findModule() const
+    {
+        CHECK_DERIVES(T, Module);
+        const char * name = typeid(T).name();
+        return (T *)findModule(name);
+    }
 
 private:
-    typedef std::set<std::string> LoadedPlugins;
+    bool parseConfig(const std::string &conf);
+    bool loadPluginLibrary(const std::string &lib_file);
+    bool unloadPluginLibrary(const std::string &lib_file);
+
+private:
+    typedef std::set<std::string> LoadedLibraries;
+    typedef std::map<std::string, Plugin *> Plugins;
+    typedef std::map<std::string, Module *> Modules;
+    typedef std::map<std::string, json> PluginConfigs;
+
     std::unique_ptr<DynLibManager> dynlib_manager_;
-    LoadedPlugins loaded_plugins_;
+    LoadedLibraries loaded_libraries_;
+    Plugins plugins_;
+    Modules modules_;
+    std::string plugin_conf_file_;
+    PluginConfigs plugin_configs_;
 };
 
-typedef bool (*PluginInstallFunc)(PluginManager *);
-typedef bool (*PluginUninstallFunc)(PluginManager *);
+typedef void (*PluginInstallFunc)(PluginManager *);
+typedef void (*PluginUninstallFunc)(PluginManager *);
 
 } // namespace yatl
 #endif

@@ -14,6 +14,9 @@ endif()
 
 add_definitions(-Wall)
 
+SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/_out/${CMAKE_BUILD_TYPE})
+SET(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/_out/${CMAKE_BUILD_TYPE})
+
 if(UNIX AND NOT APPLE)
     set(LINUX TRUE)
 endif()
@@ -27,3 +30,5 @@ add_executable(apploader ${HDRS} ${SRCS})
 if (LINUX)
     target_link_libraries(apploader dl)
 endif()
+
+add_subdirectory(examples)
