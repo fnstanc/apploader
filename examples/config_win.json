@@ -1,0 +1,14 @@
+{
+    "plugins" : {
+        "foo" : {
+            "lib" : "./foo.dll",
+            "param1" : 1
+        },
+
+        "bar" : {
+            "lib" : "./bar.dll",
+            "param1" : 1
+        }
+    }
+
+}

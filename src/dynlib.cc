@@ -105,7 +105,7 @@ void DynLibManager::unloadAll()
     dynlibs_.clear();
 }
 
-DynLib *DynLibManager::get(const std::__cxx11::string &filename) const
+DynLib *DynLibManager::get(const std::string &filename) const
 {
     auto iter = dynlibs_.find(filename);
     return iter != dynlibs_.end() ? iter->second : NULL;

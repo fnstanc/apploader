@@ -12,7 +12,11 @@ int main(int argc, char *argv[])
     using namespace yatl;
     PluginManagerImpl pm;
 
+#if defined(_WIN32) || defined(_WIN64)
+    if (!pm.init("../config_win.json")) {
+#else
     if (!pm.init("../config.json")) {
+#endif
         assert(false);
     } else if(!pm.afterInit()) {
         assert(false);
