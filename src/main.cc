@@ -5,12 +5,12 @@
  * Created Time: Wed 28 Dec 2016 12:19:34 AM CST
  */
 
-#include "yatl/plugin_manager.h"
+#include "plugin_manager_impl.h"
 
 int main(int argc, char *argv[])
 {
     using namespace yatl;
-    PluginManager pm;
+    PluginManagerImpl pm;
 
     if (!pm.init("../config.json")) {
         assert(false);

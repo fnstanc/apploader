@@ -1,11 +1,11 @@
 /*
- * File Name: plugin_manager.cc
+ * File Name: plugin_manager_impl.cc
  * Author: Stan.Lch
  * Mail: fn.stanc@gmail.com
  * Created Time: Wed 28 Dec 2016 12:37:17 AM CST
  */
 
-#include "yatl/plugin_manager.h"
+#include "plugin_manager_impl.h"
 #include "yatl/plugin.h"
 #include "rapidjson/rapidjson.h"
 #include "rapidjson/document.h"
@@ -17,7 +17,7 @@
 
 namespace yatl {
 
-PluginManager::PluginManager() :
+PluginManagerImpl::PluginManagerImpl() :
     dynlib_manager_(new DynLibManager()),
     loaded_libraries_(),
     modules_(),
@@ -26,12 +26,12 @@ PluginManager::PluginManager() :
 
 }
 
-PluginManager::~PluginManager()
+PluginManagerImpl::~PluginManagerImpl()
 {
 
 }
 
-bool PluginManager::init(const std::string &conf_file)
+bool PluginManagerImpl::init(const std::string &conf_file)
 {
     std::ifstream fs(conf_file);
     if (!fs.good()) {
@@ -69,7 +69,7 @@ bool PluginManager::init(const std::string &conf_file)
     return true;
 }
 
-bool PluginManager::afterInit()
+bool PluginManagerImpl::afterInit()
 {
     for (auto &it : plugins_) {
         it.second->afterInit();
@@ -77,7 +77,7 @@ bool PluginManager::afterInit()
     return true;
 }
 
-bool PluginManager::beforeUninit()
+bool PluginManagerImpl::beforeUninit()
 {
     for (auto &it : plugins_) {
         it.second->beforeUninit();
@@ -85,7 +85,7 @@ bool PluginManager::beforeUninit()
     return true;
 }
 
-bool PluginManager::uninit()
+bool PluginManagerImpl::uninit()
 {
     for (auto &it : loaded_libraries_) {
         unloadPluginLibrary(it);
@@ -94,14 +94,14 @@ bool PluginManager::uninit()
     return true;
 }
 
-void PluginManager::run()
+void PluginManagerImpl::run()
 {
     for (auto &it : plugins_) {
         it.second->run();
     }
 }
 
-void PluginManager::install(Plugin *plugin)
+void PluginManagerImpl::install(Plugin *plugin)
 {
     bool res = plugin->install();
     if (res) {
@@ -109,7 +109,7 @@ void PluginManager::install(Plugin *plugin)
     }
 }
 
-void PluginManager::uninstall(Plugin *plugin)
+void PluginManagerImpl::uninstall(Plugin *plugin)
 {
     auto it = plugins_.find(plugin->name());
     assert(it != plugins_.end());
@@ -117,29 +117,29 @@ void PluginManager::uninstall(Plugin *plugin)
     plugins_.erase(it);
 }
 
-Plugin *PluginManager::findPlugin(const std::string &name) const
+Plugin *PluginManagerImpl::findPlugin(const std::string &name) const
 {
     auto it = plugins_.find(name);
     return it != plugins_.end() ? it->second : nullptr;
 }
 
-void PluginManager::registerModule(const std::string &name, Module *module)
+void PluginManagerImpl::registerModule(const std::string &name, Module *module)
 {
     modules_.emplace(name, module);
 }
 
-void PluginManager::unregisterModule(const std::string &name)
+void PluginManagerImpl::unregisterModule(const std::string &name)
 {
     modules_.erase(name);
 }
 
-Module *PluginManager::findModule(const std::string &name) const
+Module *PluginManagerImpl::findModule(const std::string &name) const
 {
     auto it = modules_.find(name);
     return it != modules_.end() ? it->second : nullptr;
 }
 
-bool PluginManager::loadPluginLibrary(const std::string &lib_file)
+bool PluginManagerImpl::loadPluginLibrary(const std::string &lib_file)
 {
     DynLib *lib = dynlib_manager_->load(lib_file);
     if (!lib) {
@@ -152,7 +152,7 @@ bool PluginManager::loadPluginLibrary(const std::string &lib_file)
     return true;
 }
 
-bool PluginManager::unloadPluginLibrary(const std::string &lib_file)
+bool PluginManagerImpl::unloadPluginLibrary(const std::string &lib_file)
 {
     DynLib *lib = dynlib_manager_->get(lib_file);
     assert(lib != NULL);

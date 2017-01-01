@@ -37,29 +37,29 @@ struct IsBaseOf
 } // namespace internal
 
 #define CHECK_DERIVES(T, Base) \
-    static_assert(yatl::internal::IsBaseOf<T, Base>::Value);
+    static_assert(yatl::internal::IsBaseOf<T, Base>::Value)
 
 class PluginManager
 {
 public:
-    PluginManager();
-    ~PluginManager();
+    PluginManager() = default;
+    virtual ~PluginManager() = default;
     PluginManager(const PluginManager &) = delete;
     PluginManager &operator=(const PluginManager &) = delete;
-    bool init(const std::string &plugin_conf_file);
-    bool afterInit();
-    bool beforeUninit();
-    bool uninit();
-    void run();
+    virtual bool init(const std::string &plugin_conf_file) = 0;
+    virtual bool afterInit() = 0;
+    virtual bool beforeUninit() = 0;
+    virtual bool uninit() = 0;
+    virtual void run() = 0;
 
     // for plugin library load/unload
-    void install(Plugin *plugin);
-    void uninstall(Plugin *plugin);
-    Plugin *findPlugin(const std::string &name) const;
+    virtual void install(Plugin *plugin) = 0;
+    virtual void uninstall(Plugin *plugin) = 0;
+    virtual Plugin *findPlugin(const std::string &name) const = 0;
 
-    void registerModule(const std::string &name, Module *module);
-    void unregisterModule(const std::string &name);
-    Module *findModule(const std::string &name) const;
+    virtual void registerModule(const std::string &name, Module *module) = 0;
+    virtual void unregisterModule(const std::string &name) = 0;
+    virtual Module *findModule(const std::string &name) const = 0;
 
     template <typename T>
     void registerModule(T *module)
@@ -81,21 +81,6 @@ public:
         const char * name = typeid(T).name();
         return (T *)findModule(name);
     }
-
-private:
-    bool loadPluginLibrary(const std::string &lib_file);
-    bool unloadPluginLibrary(const std::string &lib_file);
-
-private:
-    typedef std::set<std::string> LoadedLibraries;
-    typedef std::map<std::string, Plugin *> Plugins;
-    typedef std::map<std::string, Module *> Modules;
-
-    std::unique_ptr<DynLibManager> dynlib_manager_;
-    LoadedLibraries loaded_libraries_;
-    Plugins plugins_;
-    Modules modules_;
-    std::string plugin_conf_file_;
 };
 
 typedef void (*PluginInstallFunc)(PluginManager *);
