@@ -7,9 +7,13 @@
 
 #include "yatl/plugin_manager.h"
 #include "yatl/plugin.h"
+#include "rapidjson/rapidjson.h"
+#include "rapidjson/document.h"
+#include "rapidjson/istreamwrapper.h"
 #include "dynlib.h"
 #include <cassert>
 #include <fstream>
+#include <iostream>
 
 namespace yatl {
 
@@ -17,8 +21,7 @@ PluginManager::PluginManager() :
     dynlib_manager_(new DynLibManager()),
     loaded_libraries_(),
     modules_(),
-    plugin_conf_file_(),
-    plugin_configs_()
+    plugin_conf_file_()
 {
 
 }
@@ -28,23 +31,39 @@ PluginManager::~PluginManager()
 
 }
 
-bool PluginManager::init(const std::string &plugin_conf_file)
+bool PluginManager::init(const std::string &conf_file)
 {
-    if (!parseConfig(plugin_conf_file))
+    std::ifstream fs(conf_file);
+    if (!fs.good()) {
+        std::cerr << "Failed to open config file: " << conf_file << std::endl;
         return false;
+    }
 
-    if (plugin_configs_.empty())
+    rapidjson::Document doc;
+    rapidjson::IStreamWrapper sw(fs);
+    doc.ParseStream(sw);
+    if (doc.HasParseError()) {
         return false;
+    }
 
-    for (auto &it : plugin_configs_) {
-        const json &j = it.second;
-        std::string lib = j.find("lib").value().get<std::string>();
-        if (loaded_libraries_.count(lib) > 0) {
-            std::cerr << "Already loaded a plugin from " << lib << std::endl;
+    assert(doc.IsObject());
+
+    auto &plugins = doc["plugins"];
+    for (auto it = plugins.MemberBegin(); it != plugins.MemberEnd(); ++it) {
+        auto name = it->name.GetString();
+        auto &val = it->value;
+
+        auto lib = val.FindMember("lib");
+        if (lib == val.MemberEnd()) {
+            std::cerr << "Plugin config requires shared library path, name = " << name << std::endl;
             continue;
         }
-        loadPluginLibrary(lib);
-        loaded_libraries_.insert(lib);
+        auto path = lib->value.GetString();
+        if (loadPluginLibrary(path)) {
+            loaded_libraries_.insert(path);
+        } else {
+            std::cerr << "Failed to load plugin " << name << std::endl;
+        }
     }
 
     return true;
@@ -118,39 +137,6 @@ Module *PluginManager::findModule(const std::string &name) const
 {
     auto it = modules_.find(name);
     return it != modules_.end() ? it->second : nullptr;
-}
-
-bool PluginManager::parseConfig(const std::string &conf)
-{
-    std::ifstream fs(conf);
-    json config;
-    fs >> config;
-
-    json::iterator it = config.begin();
-    json::iterator last = config.end();
-
-    auto isValid = [](const json &j) {
-        if (!j.is_object())
-            return false;
-
-        json::const_iterator lib = j.find("lib");
-        if (lib == j.end())
-            return false;
-        else if(!lib->is_string())
-            return false;
-
-        return true;
-    };
-
-    for (; it != last; ++it) {
-        if (isValid(it.value())) {
-            plugin_configs_[it.key()] = it.value();
-        } else {
-            std::cerr << "Error config, key = " << it.key() << ", val = " << it.value() << std::endl;
-        }
-    }
-
-    return true;
 }
 
 bool PluginManager::loadPluginLibrary(const std::string &lib_file)

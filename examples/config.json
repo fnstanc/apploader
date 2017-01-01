@@ -1,11 +1,14 @@
 {
-    "foo" : {
-        "lib" : "./libfoo.so",
-        "param1" : 1
-    },
+    "plugins" : {
+        "foo" : {
+            "lib" : "./libfoo.so",
+            "param1" : 1
+        },
 
-    "bar" : {
-        "lib" : "./libbar.so",
-        "param1" : 1
+        "bar" : {
+            "lib" : "./libbar.so",
+            "param1" : 1
+        }
     }
+
 }

@@ -8,7 +8,6 @@
 #ifndef _PLUGIN_MANAGER_H
 #define _PLUGIN_MANAGER_H
 
-#include "json.hpp"
 #include <memory>
 #include <string>
 #include <set>
@@ -16,8 +15,6 @@
 #include <cassert>
 
 namespace yatl {
-
-using json = nlohmann::json;
 
 class DynLibManager;
 class Module;
@@ -86,7 +83,6 @@ public:
     }
 
 private:
-    bool parseConfig(const std::string &conf);
     bool loadPluginLibrary(const std::string &lib_file);
     bool unloadPluginLibrary(const std::string &lib_file);
 
@@ -94,14 +90,12 @@ private:
     typedef std::set<std::string> LoadedLibraries;
     typedef std::map<std::string, Plugin *> Plugins;
     typedef std::map<std::string, Module *> Modules;
-    typedef std::map<std::string, json> PluginConfigs;
 
     std::unique_ptr<DynLibManager> dynlib_manager_;
     LoadedLibraries loaded_libraries_;
     Plugins plugins_;
     Modules modules_;
     std::string plugin_conf_file_;
-    PluginConfigs plugin_configs_;
 };
 
 typedef void (*PluginInstallFunc)(PluginManager *);

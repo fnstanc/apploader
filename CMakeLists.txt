@@ -25,8 +25,9 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 
 file(GLOB HDRS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" include/yatl/*.h include/yatl/*.hpp)
 file(GLOB SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" src/*.cpp src/*.cc src/*.h src/*.hpp)
+file(GLOB RAPIDJSON_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" include/rapidjson/*.h)
 
-add_executable(apploader ${HDRS} ${SRCS})
+add_executable(apploader ${HDRS} ${SRCS} ${RAPIDJSON_SRCS})
 if (LINUX)
     target_link_libraries(apploader dl)
 endif()
