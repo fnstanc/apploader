@@ -10,6 +10,7 @@
 
 #include <string>
 #include <cassert>
+#include <typeinfo>
 
 namespace yatl {
 
