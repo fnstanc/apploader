@@ -8,15 +8,11 @@
 #ifndef _PLUGIN_MANAGER_H
 #define _PLUGIN_MANAGER_H
 
-#include <memory>
 #include <string>
-#include <set>
-#include <map>
 #include <cassert>
 
 namespace yatl {
 
-class DynLibManager;
 class Module;
 class Plugin;
 
@@ -37,7 +33,7 @@ struct IsBaseOf
 } // namespace internal
 
 #define CHECK_DERIVES(T, Base) \
-    static_assert(yatl::internal::IsBaseOf<T, Base>::Value)
+    static_assert(yatl::internal::IsBaseOf<T, Base>::Value, "T is not derived from Base.")
 
 class PluginManager
 {
