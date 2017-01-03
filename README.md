@@ -8,6 +8,7 @@ A plugin based app framework for C++.
     
     git clone https://github.com/fnstanc/apploader
     cd ./apploader
+    git submodule update --init
     mkdir build
     cd build && cmake ..
     make -j4
