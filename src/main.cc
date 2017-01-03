@@ -46,11 +46,8 @@ int main(int argc, char *argv[])
         usage();
         return -2;
     }
-#if defined(_WIN32) || defined(_WIN64)
-    if (!pm.init("../config_win.json")) {
-#else
-    if (!pm.init("../config.json")) {
-#endif
+
+    if (!pm.init(conf_file)) {
         assert(false);
     } else if(!pm.afterInit()) {
         assert(false);
