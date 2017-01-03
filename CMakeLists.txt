@@ -21,15 +21,22 @@ if(UNIX AND NOT APPLE)
     set(LINUX TRUE)
 endif()
 
-include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(
+    ${PROJECT_SOURCE_DIR}/include
+    ${PROJECT_SOURCE_DIR}/external/getopt
+    )
+
+add_subdirectory(external/getopt)
 
 file(GLOB HDRS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" include/yatl/*.h include/yatl/*.hpp)
 file(GLOB SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" src/*.cpp src/*.cc src/*.h src/*.hpp)
 file(GLOB RAPIDJSON_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" include/rapidjson/*.h)
 
 add_executable(apploader ${HDRS} ${SRCS} ${RAPIDJSON_SRCS})
+set(APPLOADER_DEPS getopt)
 if (LINUX)
-    target_link_libraries(apploader dl)
+    list(APPEND APPLOADER_DEPS dl)
 endif()
+target_link_libraries(apploader ${APPLOADER_DEPS})
 
 add_subdirectory(examples)

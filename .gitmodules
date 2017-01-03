@@ -1,0 +1,3 @@
+[submodule "external/getopt"]
+	path = external/getopt
+	url = https://github.com/fnstanc/getopt_port
