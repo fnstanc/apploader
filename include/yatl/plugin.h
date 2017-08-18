@@ -20,16 +20,16 @@ class Plugin;
 class Module
 {
 public:
-    Module(const Plugin &) = delete;
-    Module &operator=(const Plugin &) = delete;
-    Module() = default;
+    Module(const Module &) = delete;
+    Module &operator=(const Module &) = delete;
+    Module() : plugin_(nullptr) {}
     virtual ~Module() {}
     Plugin *getPlugin() const;
     virtual bool init() { return true; }
     virtual bool afterInit() { return true; }
-    virtual bool beforeUninit() { return true; }
-    virtual bool uninit() { return true; }
-    virtual void run() {}
+    virtual bool beforeShutdown() { return true; }
+    virtual bool shutdown() { return true; }
+    virtual void execute() {}
 
 protected:
     Plugin *plugin_;
@@ -48,14 +48,7 @@ public:
     const std::string &name() const { return name_; }
     PluginManager *pluginManager() const { return plugin_manager_; }
     virtual bool install() = 0;
-    virtual bool uninstall()
-    {
-        for (auto *module : modules_)
-        {
-            delete module;
-        }
-        return true;
-    }
+    virtual bool uninstall() = 0;
 
     virtual bool init()
     {
@@ -75,29 +68,29 @@ public:
         return true;
     }
 
-    virtual bool beforeUninit()
+    virtual bool beforeShutdown()
     {
         for (auto *module : modules_)
         {
-            module->beforeUninit();
+            module->beforeShutdown();
         }
         return true;
     }
 
-    virtual bool uninit()
+    virtual bool shutdown()
     {
         for (auto *module : modules_)
         {
-            module->uninit();
+            module->shutdown();
         }
         return true;
     }
 
-    virtual void run()
+    virtual void execute()
     {
         for (auto *module : modules_)
         {
-            module->run();
+            module->execute();
         }
     }
 

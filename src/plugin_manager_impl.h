@@ -29,9 +29,9 @@ public:
 
     bool init(const std::string &plugin_conf_file) override;
     bool afterInit() override;
-    bool beforeUninit() override;
-    bool uninit() override;
-    void run() override;
+    bool beforeShutdown() override;
+    bool shutdown() override;
+    void execute() override;
 
     // for plugin library load/unload
     void install(Plugin *plugin) override;

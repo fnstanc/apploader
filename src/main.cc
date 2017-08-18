@@ -15,6 +15,7 @@ void usage()
     fprintf(stdout, "This is Usage.\n");
 }
 
+bool exitApp = false;
 int main(int argc, char *argv[])
 {
     using namespace yatl;
@@ -53,9 +54,11 @@ int main(int argc, char *argv[])
         assert(false);
     }
 
-    pm.run();
+    while (!exitApp) {
+        pm.execute();
+    }
 
-    pm.beforeUninit();
-    pm.uninit();
+    pm.beforeShutdown();
+    pm.shutdown();
     return 0;
 }

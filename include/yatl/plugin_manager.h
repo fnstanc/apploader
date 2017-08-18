@@ -45,9 +45,9 @@ public:
     PluginManager &operator=(const PluginManager &) = delete;
     virtual bool init(const std::string &plugin_conf_file) = 0;
     virtual bool afterInit() = 0;
-    virtual bool beforeUninit() = 0;
-    virtual bool uninit() = 0;
-    virtual void run() = 0;
+    virtual bool beforeShutdown() = 0;
+    virtual bool shutdown() = 0;
+    virtual void execute() = 0;
 
     // for plugin library load/unload
     virtual void install(Plugin *plugin) = 0;

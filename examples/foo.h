@@ -33,7 +33,7 @@ class ModuleFoo : public Module
 public:
     ModuleFoo(Plugin *plugin) { plugin_ = plugin; }
     bool afterInit() override;
-    void run() override;
+    void execute() override;
 };
 
 }

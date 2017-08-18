@@ -66,27 +66,41 @@ bool PluginManagerImpl::init(const std::string &conf_file)
         }
     }
 
+    for (auto &it : plugins_) {
+        if (!it.second->init())
+        {
+            return false;
+        }
+    }
+
     return true;
 }
 
 bool PluginManagerImpl::afterInit()
 {
     for (auto &it : plugins_) {
-        it.second->afterInit();
+        if (!it.second->afterInit())
+        {
+            return false;
+        }
     }
     return true;
 }
 
-bool PluginManagerImpl::beforeUninit()
+bool PluginManagerImpl::beforeShutdown()
 {
     for (auto &it : plugins_) {
-        it.second->beforeUninit();
+        it.second->beforeShutdown();
     }
     return true;
 }
 
-bool PluginManagerImpl::uninit()
+bool PluginManagerImpl::shutdown()
 {
+    for (auto &it : plugins_) {
+        it.second->shutdown();
+    }
+
     for (auto &it : loaded_libraries_) {
         unloadPluginLibrary(it);
     }
@@ -94,10 +108,10 @@ bool PluginManagerImpl::uninit()
     return true;
 }
 
-void PluginManagerImpl::run()
+void PluginManagerImpl::execute()
 {
     for (auto &it : plugins_) {
-        it.second->run();
+        it.second->execute();
     }
 }
 

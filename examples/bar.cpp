@@ -35,7 +35,31 @@ class ModuleBarImpl : public ModuleBar
 public:
     ModuleBarImpl(Plugin *plugin) { plugin_ = plugin; }
 
-    void run() override
+    bool init() override
+    {
+        std::cout << __FUNCTION__ << " (" << __FILE__ << "," << __LINE__ << ")" << std::endl;
+        return true;
+    }
+
+    bool afterInit() override
+    {
+        std::cout << __FUNCTION__ << " (" << __FILE__ << "," << __LINE__ << ")" << std::endl;
+        return true;
+    }
+
+    virtual bool beforeShutdown() override
+    {
+        std::cout << __FUNCTION__ << " (" << __FILE__ << "," << __LINE__ << ")" << std::endl;
+        return true;
+    }
+
+    virtual bool shutdown() override
+    {
+        std::cout << __FUNCTION__ << " (" << __FILE__ << "," << __LINE__ << ")" << std::endl;
+        return true;
+    }
+
+    void execute() override
     {
         std::cout << __FUNCTION__ << " (" << __FILE__ << "," << __LINE__ << ")" << std::endl;
     }

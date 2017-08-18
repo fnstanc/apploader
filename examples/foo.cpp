@@ -45,12 +45,13 @@ bool PluginFoo::uninstall()
 
 bool ModuleFoo::afterInit()
 {
+    std::cout << __FUNCTION__ << " (" << __FILE__ << "," << __LINE__ << ")" << std::endl;
     ModuleBar *bar = plugin_->pluginManager()->findModule<ModuleBar>();
     bar->bar();
     return true;
 }
 
-void ModuleFoo::run()
+void ModuleFoo::execute()
 {
    std::cout << __FUNCTION__ << " (" << __FILE__ << "," << __LINE__ << ")" << std::endl;
 }
