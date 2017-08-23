@@ -43,6 +43,12 @@ public:
     virtual ~PluginManager() = default;
     PluginManager(const PluginManager &) = delete;
     PluginManager &operator=(const PluginManager &) = delete;
+
+    virtual void appid(int id) = 0;
+    virtual int appid() = 0;
+    virtual std::string &name() = 0;
+    virtual void name(const std::string &n) = 0;
+
     virtual bool init(const std::string &plugin_conf_file) = 0;
     virtual bool afterInit() = 0;
     virtual bool beforeShutdown() = 0;

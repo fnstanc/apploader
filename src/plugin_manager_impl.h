@@ -27,6 +27,11 @@ public:
     PluginManagerImpl();
     ~PluginManagerImpl();
 
+    virtual void appid(int id);
+    virtual int appid();
+    virtual std::string &name();
+    virtual void name(const std::string &n);
+
     bool init(const std::string &plugin_conf_file) override;
     bool afterInit() override;
     bool beforeShutdown() override;
@@ -56,6 +61,8 @@ private:
     Plugins plugins_;
     Modules modules_;
     std::string plugin_conf_file_;
+    int appid_;
+    std::string name_;
 };
 
 } // namespace yatl

@@ -21,7 +21,9 @@ PluginManagerImpl::PluginManagerImpl() :
     dynlib_manager_(new DynLibManager()),
     loaded_libraries_(),
     modules_(),
-    plugin_conf_file_()
+    plugin_conf_file_(),
+    appid_(0),
+    name_("AppLoader")
 {
 
 }
@@ -29,6 +31,26 @@ PluginManagerImpl::PluginManagerImpl() :
 PluginManagerImpl::~PluginManagerImpl()
 {
 
+}
+
+void PluginManagerImpl::appid(int id)
+{
+    appid_ = id;
+}
+
+int PluginManagerImpl::appid()
+{
+    return appid_;
+}
+
+std::string & PluginManagerImpl::name()
+{
+    return name_;
+}
+
+void PluginManagerImpl::name(const std::string &n)
+{
+    name_ = n;
 }
 
 bool PluginManagerImpl::init(const std::string &conf_file)
@@ -43,6 +65,7 @@ bool PluginManagerImpl::init(const std::string &conf_file)
     rapidjson::IStreamWrapper sw(fs);
     doc.ParseStream(sw);
     if (doc.HasParseError()) {
+        std::cerr << "Error when parsing config file: " << doc.GetParseError() << std::endl;
         return false;
     }
 
