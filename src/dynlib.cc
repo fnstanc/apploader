@@ -25,11 +25,18 @@
 
 namespace yatl {
 
-DynLib::DynLib(const std::string &name) :
-    filename_(name),
+DynLib::DynLib(const std::string &lib_name) :
     handle_(NULL)
 {
-    assert(!filename_.empty());
+    assert(!lib_name.empty());
+
+#if defined(__linux__)
+	filename_ = "lib" + lib_name + ".so";
+#elif defined(_WIN32) || defined(_WIN64)
+	filename_ = lib_name + ".dll";
+#else
+#error platform not support
+#endif
 }
 
 DynLib::~DynLib()
@@ -72,23 +79,23 @@ DynLibManager::~DynLibManager()
     unloadAll();
 }
 
-DynLib * DynLibManager::load(const std::string &filename)
+DynLib * DynLibManager::load(const std::string &lib_name)
 {
-    auto iter = dynlibs_.find(filename);
+    auto iter = dynlibs_.find(lib_name);
     if (dynlibs_.end() != iter)
         return iter->second;
-    DynLib *lib = new DynLib(filename);
+    DynLib *lib = new DynLib(lib_name);
     if (!lib->load()) {
         delete lib;
         return NULL;
     }
-    dynlibs_.insert(DynLibs::value_type(filename, lib));
+    dynlibs_.insert(DynLibs::value_type(lib_name, lib));
     return lib;
 }
 
-void DynLibManager::unload(const std::string &filename)
+void DynLibManager::unload(const std::string &lib_name)
 {
-    auto iter = dynlibs_.find(filename);
+    auto iter = dynlibs_.find(lib_name);
     if (dynlibs_.end() != iter) {
         iter->second->unload();
         delete iter->second;
@@ -105,9 +112,9 @@ void DynLibManager::unloadAll()
     dynlibs_.clear();
 }
 
-DynLib *DynLibManager::get(const std::string &filename) const
+DynLib *DynLibManager::get(const std::string &lib_name) const
 {
-    auto iter = dynlibs_.find(filename);
+    auto iter = dynlibs_.find(lib_name);
     return iter != dynlibs_.end() ? iter->second : NULL;
 }
 

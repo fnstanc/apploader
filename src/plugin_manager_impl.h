@@ -29,7 +29,7 @@ public:
 
     virtual void appid(int id);
     virtual int appid();
-    virtual std::string &name();
+    virtual const std::string &name();
     virtual void name(const std::string &n);
 
     bool init(const std::string &plugin_conf_file) override;
@@ -48,8 +48,8 @@ public:
     Module *findModule(const std::string &name) const override;
 
 private:
-    bool loadPluginLibrary(const std::string &lib_file);
-    bool unloadPluginLibrary(const std::string &lib_file);
+    bool loadPluginLibrary(const std::string &lib_name);
+    bool unloadPluginLibrary(const std::string &lib_name);
 
 private:
     typedef std::set<std::string> LoadedLibraries;

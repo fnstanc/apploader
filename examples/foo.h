@@ -34,6 +34,8 @@ public:
     ModuleFoo(Plugin *plugin) { plugin_ = plugin; }
     bool afterInit() override;
     void execute() override;
+private:
+	bool executed{false};
 };
 
 }

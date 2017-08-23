@@ -43,7 +43,7 @@ int PluginManagerImpl::appid()
     return appid_;
 }
 
-std::string & PluginManagerImpl::name()
+const std::string & PluginManagerImpl::name()
 {
     return name_;
 }
@@ -71,21 +71,21 @@ bool PluginManagerImpl::init(const std::string &conf_file)
 
     assert(doc.IsObject());
 
-    auto &plugins = doc["plugins"];
-    for (auto it = plugins.MemberBegin(); it != plugins.MemberEnd(); ++it) {
-        auto name = it->name.GetString();
-        auto &val = it->value;
+	auto &app_conf = doc.FindMember(name().c_str());
+	if (app_conf == doc.MemberEnd()) {
+		std::cerr << "There is no app named " << name() << std::endl;
+		return false;
+	}
 
-        auto lib = val.FindMember("lib");
-        if (lib == val.MemberEnd()) {
-            std::cerr << "Plugin config requires shared library path, name = " << name << std::endl;
-            continue;
-        }
-        auto path = lib->value.GetString();
-        if (loadPluginLibrary(path)) {
-            loaded_libraries_.insert(path);
+    auto &plugins = app_conf->value["plugins"];
+	assert(plugins.IsArray());
+
+    for (auto it = plugins.Begin(); it != plugins.End(); ++it) {
+		std::string lib_name = it->GetString();
+        if (loadPluginLibrary(lib_name)) {
+            loaded_libraries_.insert(lib_name);
         } else {
-            std::cerr << "Failed to load plugin " << name << std::endl;
+            std::cerr << "Failed to load plugin " << lib_name << std::endl;
         }
     }
 
@@ -176,11 +176,10 @@ Module *PluginManagerImpl::findModule(const std::string &name) const
     return it != modules_.end() ? it->second : nullptr;
 }
 
-bool PluginManagerImpl::loadPluginLibrary(const std::string &lib_file)
+bool PluginManagerImpl::loadPluginLibrary(const std::string &lib_name)
 {
-    DynLib *lib = dynlib_manager_->load(lib_file);
+    DynLib *lib = dynlib_manager_->load(lib_name);
     if (!lib) {
-        std::cerr << "Failed to load " << lib_file << std::endl;
         return false;
     }
     PluginInstallFunc func = (PluginInstallFunc)lib->getSymbol("installPlugin");
@@ -189,14 +188,14 @@ bool PluginManagerImpl::loadPluginLibrary(const std::string &lib_file)
     return true;
 }
 
-bool PluginManagerImpl::unloadPluginLibrary(const std::string &lib_file)
+bool PluginManagerImpl::unloadPluginLibrary(const std::string &lib_name)
 {
-    DynLib *lib = dynlib_manager_->get(lib_file);
+    DynLib *lib = dynlib_manager_->get(lib_name);
     assert(lib != NULL);
     PluginUninstallFunc func = (PluginUninstallFunc)lib->getSymbol("uninstallPlugin");
     assert(func != NULL);
     func(this);
-    dynlib_manager_->unload(lib_file);
+    dynlib_manager_->unload(lib_name);
     return true;
 }
 

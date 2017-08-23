@@ -53,7 +53,10 @@ bool ModuleFoo::afterInit()
 
 void ModuleFoo::execute()
 {
-   std::cout << __FUNCTION__ << " (" << __FILE__ << "," << __LINE__ << ")" << std::endl;
+	if (!executed) {
+		executed = true;
+		std::cout << __FUNCTION__ << " (" << __FILE__ << "," << __LINE__ << ")" << std::endl;
+	}
 }
 
 }

@@ -61,13 +61,19 @@ public:
 
     void execute() override
     {
-        std::cout << __FUNCTION__ << " (" << __FILE__ << "," << __LINE__ << ")" << std::endl;
+		if (!executed) {
+			executed = true;
+			std::cout << __FUNCTION__ << " (" << __FILE__ << "," << __LINE__ << ")" << std::endl;
+		}
     }
 
     void bar()
     {
         std::cout << __FUNCTION__ << " (" << __FILE__ << "," << __LINE__ << ")" << std::endl;
     }
+
+private:
+	bool executed{ false };
 };
 
 bool PluginBar::install()

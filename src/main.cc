@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
     std::string app_name = "AppLoader";
     std::string str_app_id = "0";
     int ch;
-    while ((ch = getopt(argc, argv, "c:h:n")) != -1) {
+    while ((ch = getopt(argc, argv, "n:c:h")) != -1) {
         switch (ch) {
             case 'c': {
                 conf_file = optarg;

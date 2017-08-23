@@ -16,7 +16,7 @@ namespace yatl {
 class DynLib
 {
 public:
-    DynLib(const std::string &filename);
+    DynLib(const std::string &lib_name);
     ~DynLib();
     bool load();
     void unload();
@@ -37,10 +37,10 @@ class DynLibManager
 public:
     DynLibManager() {}
     ~DynLibManager();
-    DynLib *load(const std::string &filename);
-    void unload(const std::string &filename);
+    DynLib *load(const std::string &lib_name);
+    void unload(const std::string &lib_name);
     void unloadAll();
-    DynLib *get(const std::string &filename) const;
+    DynLib *get(const std::string &lib_name) const;
 
 private:
     DynLibManager(const DynLibManager &);
