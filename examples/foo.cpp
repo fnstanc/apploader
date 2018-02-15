@@ -11,12 +11,12 @@
 #include <cstdio>
 #include <iostream>
 
-YATL_API void installPlugin(yatl::PluginManager *pm)
+YATL_API void InstallPlugin(yatl::PluginManager *pm)
 {
     CREATE_PLUGIN(pm, yatl::PluginFoo);
 }
 
-YATL_API void uninstallPlugin(yatl::PluginManager *pm)
+YATL_API void UninstallPlugin(yatl::PluginManager *pm)
 {
     DESTROY_PLUGIN(pm, yatl::PluginFoo);
 }
@@ -31,27 +31,27 @@ PluginFoo::~PluginFoo()
 {
 }
 
-bool PluginFoo::install()
+bool PluginFoo::Install()
 {
     REG_MODULE(plugin_manager_, ModuleFoo, ModuleFoo);
     return true;
 }
 
-bool PluginFoo::uninstall()
+bool PluginFoo::Uninstall()
 {
     UNREG_MODULE(plugin_manager_, ModuleFoo, ModuleFoo);
     return true;
 }
 
-bool ModuleFoo::afterInit()
+bool ModuleFoo::AfterInit()
 {
     std::cout << __FUNCTION__ << " (" << __FILE__ << "," << __LINE__ << ")" << std::endl;
-    ModuleBar *bar = plugin_->pluginManager()->findModule<ModuleBar>();
+    ModuleBar *bar = plugin_->pluginManager()->FindModule<ModuleBar>();
     bar->bar();
     return true;
 }
 
-void ModuleFoo::execute()
+void ModuleFoo::Execute()
 {
 	if (!executed) {
 		executed = true;

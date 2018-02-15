@@ -24,12 +24,12 @@ public:
     Module &operator=(const Module &) = delete;
     Module() : plugin_(nullptr) {}
     virtual ~Module() {}
-    Plugin *getPlugin() const;
-    virtual bool init() { return true; }
-    virtual bool afterInit() { return true; }
-    virtual bool beforeShutdown() { return true; }
-    virtual bool shutdown() { return true; }
-    virtual void execute() {}
+    Plugin *GetPlugin() const;
+    virtual bool Init() { return true; }
+    virtual bool AfterInit() { return true; }
+    virtual bool BeforeShutdown() { return true; }
+    virtual bool Shutdown() { return true; }
+    virtual void Execute() {}
 
 protected:
     Plugin *plugin_;
@@ -45,62 +45,62 @@ public:
     Plugin(const std::string &name, PluginManager *plugim_manager) :
         name_(name), plugin_manager_(plugim_manager){}
     virtual ~Plugin() {}
-    const std::string &name() const { return name_; }
+    const std::string &Name() const { return name_; }
     PluginManager *pluginManager() const { return plugin_manager_; }
-    virtual bool install() = 0;
-    virtual bool uninstall() = 0;
+    virtual bool Install() = 0;
+    virtual bool Uninstall() = 0;
 
-    virtual bool init()
+    virtual bool Init()
     {
         for (auto *module : modules_)
         {
-            module->init();
+            module->Init();
         }
         return true;
     }
 
-    virtual bool afterInit()
+    virtual bool AfterInit()
     {
         for (auto *module : modules_)
         {
-            module->afterInit();
+            module->AfterInit();
         }
         return true;
     }
 
-    virtual bool beforeShutdown()
+    virtual bool BeforeShutdown()
     {
         for (auto *module : modules_)
         {
-            module->beforeShutdown();
+            module->BeforeShutdown();
         }
         return true;
     }
 
-    virtual bool shutdown()
+    virtual bool Shutdown()
     {
         for (auto *module : modules_)
         {
-            module->shutdown();
+            module->Shutdown();
         }
         return true;
     }
 
-    virtual void execute()
+    virtual void Execute()
     {
         for (auto *module : modules_)
         {
-            module->execute();
+            module->Execute();
         }
     }
 
 protected:
-    void addModule(Module *module)
+    void AddModule(Module *module)
     {
         modules_.push_back(module);
     }
 
-    void delModule(Module *module)
+    void RemoveModule(Module *module)
     {
         auto it = std::find(modules_.begin(), modules_.end(), module);
         if (it != modules_.end())
@@ -117,14 +117,14 @@ protected:
 #define CREATE_PLUGIN(pm, PluginClass) \
     do { \
         PluginClass *plugin = new PluginClass(pm); \
-        pm->install(plugin); \
+        pm->Install(plugin); \
     } while(0)
 
 #define DESTROY_PLUGIN(pm, PluginClass) \
     do { \
-        auto *p = pm->findPlugin(CLASS_NAME(PluginClass)); \
+        auto *p = pm->FindPlugin(CLASS_NAME(PluginClass)); \
         if (p) { \
-            pm->uninstall(p); \
+            pm->Uninstall(p); \
             delete p; \
         } \
     } while(0)
@@ -132,16 +132,16 @@ protected:
 #define REG_MODULE(pm, Interface, Impl) \
     do { \
         Interface *module = new Impl(this);  \
-        addModule(module); \
-        pm->registerModule<Interface>(module); \
+        AddModule(module); \
+        pm->RegisterModule<Interface>(module); \
     } while(0)
 
 #define UNREG_MODULE(pm, Interface, Impl) \
     do { \
-        Interface *module = pm->findModule<Interface>(); \
+        Interface *module = pm->FindModule<Interface>(); \
         if (module) { \
-            delModule(module); \
-            pm->unregisterModule<Interface>();  \
+            RemoveModule(module); \
+            pm->UnregisterModule<Interface>();  \
             delete module; \
         } \
     } while(0)

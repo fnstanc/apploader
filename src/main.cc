@@ -68,23 +68,23 @@ int main(int argc, char *argv[])
     }
 
     int id = std::atoi(str_app_id.c_str());
-    pm.appid(id);
-    pm.name(app_name);
+    pm.AppID(id);
+    pm.AppName(app_name);
 
     std::string title = app_name + "-" + str_app_id;
     setConsoleTitle(title);
 
-    if (!pm.init(conf_file)) {
+    if (!pm.Init(conf_file)) {
         assert(false);
-    } else if(!pm.afterInit()) {
+    } else if(!pm.AfterInit()) {
         assert(false);
     }
 
     while (!exitApp) {
-        pm.execute();
+        pm.Execute();
     }
 
-    pm.beforeShutdown();
-    pm.shutdown();
+    pm.BeforeShutdown();
+    pm.Shutdown();
     return 0;
 }

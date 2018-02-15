@@ -27,29 +27,29 @@ public:
     PluginManagerImpl();
     ~PluginManagerImpl();
 
-    virtual void appid(int id);
-    virtual int appid();
-    virtual const std::string &name();
-    virtual void name(const std::string &n);
+    virtual void AppID(int id);
+    virtual int AppID();
+    virtual const std::string &AppName();
+    virtual void AppName(const std::string &n);
 
-    bool init(const std::string &plugin_conf_file) override;
-    bool afterInit() override;
-    bool beforeShutdown() override;
-    bool shutdown() override;
-    void execute() override;
+    bool Init(const std::string &plugin_conf_file) override;
+    bool AfterInit() override;
+    bool BeforeShutdown() override;
+    bool Shutdown() override;
+    void Execute() override;
 
     // for plugin library load/unload
-    void install(Plugin *plugin) override;
-    void uninstall(Plugin *plugin) override;
-    Plugin *findPlugin(const std::string &name) const override;
+    void Install(Plugin *plugin) override;
+    void Uninstall(Plugin *plugin) override;
+    Plugin *FindPlugin(const std::string &name) const override;
 
-    void registerModule(const std::string &name, Module *module) override;
-    void unregisterModule(const std::string &name) override;
-    Module *findModule(const std::string &name) const override;
+    void RegisterModule(const std::string &name, Module *module) override;
+    void UnregisterModule(const std::string &name) override;
+    Module *FindModule(const std::string &name) const override;
 
 private:
-    bool loadPluginLibrary(const std::string &lib_name);
-    bool unloadPluginLibrary(const std::string &lib_name);
+    bool LoadPluginLibrary(const std::string &lib_name);
+    bool UnloadPluginLibrary(const std::string &lib_name);
 
 private:
     typedef std::set<std::string> LoadedLibraries;

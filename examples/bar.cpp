@@ -10,12 +10,12 @@
 #include <cstdio>
 #include <iostream>
 
-YATL_API void installPlugin(yatl::PluginManager *pm)
+YATL_API void InstallPlugin(yatl::PluginManager *pm)
 {
     CREATE_PLUGIN(pm, yatl::PluginBar);
 }
 
-YATL_API void uninstallPlugin(yatl::PluginManager *pm)
+YATL_API void UninstallPlugin(yatl::PluginManager *pm)
 {
     DESTROY_PLUGIN(pm, yatl::PluginBar);
 }
@@ -35,31 +35,31 @@ class ModuleBarImpl : public ModuleBar
 public:
     ModuleBarImpl(Plugin *plugin) { plugin_ = plugin; }
 
-    bool init() override
+    bool Init() override
     {
         std::cout << __FUNCTION__ << " (" << __FILE__ << "," << __LINE__ << ")" << std::endl;
         return true;
     }
 
-    bool afterInit() override
+    bool AfterInit() override
     {
         std::cout << __FUNCTION__ << " (" << __FILE__ << "," << __LINE__ << ")" << std::endl;
         return true;
     }
 
-    virtual bool beforeShutdown() override
+    virtual bool BeforeShutdown() override
     {
         std::cout << __FUNCTION__ << " (" << __FILE__ << "," << __LINE__ << ")" << std::endl;
         return true;
     }
 
-    virtual bool shutdown() override
+    virtual bool Shutdown() override
     {
         std::cout << __FUNCTION__ << " (" << __FILE__ << "," << __LINE__ << ")" << std::endl;
         return true;
     }
 
-    void execute() override
+    void Execute() override
     {
 		if (!executed) {
 			executed = true;
@@ -76,13 +76,13 @@ private:
 	bool executed{ false };
 };
 
-bool PluginBar::install()
+bool PluginBar::Install()
 {
     REG_MODULE(plugin_manager_, ModuleBar, ModuleBarImpl);
     return true;
 }
 
-bool PluginBar::uninstall()
+bool PluginBar::Uninstall()
 {
     UNREG_MODULE(plugin_manager_, ModuleBar, ModuleBarImpl);
     return true;

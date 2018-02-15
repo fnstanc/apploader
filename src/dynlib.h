@@ -18,10 +18,10 @@ class DynLib
 public:
     DynLib(const std::string &lib_name);
     ~DynLib();
-    bool load();
-    void unload();
-    void *getSymbol(const char *sym) const throw();
-    const std::string &filename() const;
+    bool Load();
+    void Unload();
+    void *GetSymbol(const char *sym) const throw();
+    const std::string &Filename() const;
 
 private:
     DynLib(const DynLib &);
@@ -37,10 +37,10 @@ class DynLibManager
 public:
     DynLibManager() {}
     ~DynLibManager();
-    DynLib *load(const std::string &lib_name);
-    void unload(const std::string &lib_name);
-    void unloadAll();
-    DynLib *get(const std::string &lib_name) const;
+    DynLib *Load(const std::string &lib_name);
+    void Unload(const std::string &lib_name);
+    void UnloadAll();
+    DynLib *Get(const std::string &lib_name) const;
 
 private:
     DynLibManager(const DynLibManager &);

@@ -33,27 +33,27 @@ PluginManagerImpl::~PluginManagerImpl()
 
 }
 
-void PluginManagerImpl::appid(int id)
+void PluginManagerImpl::AppID(int id)
 {
     appid_ = id;
 }
 
-int PluginManagerImpl::appid()
+int PluginManagerImpl::AppID()
 {
     return appid_;
 }
 
-const std::string & PluginManagerImpl::name()
+const std::string & PluginManagerImpl::AppName()
 {
     return name_;
 }
 
-void PluginManagerImpl::name(const std::string &n)
+void PluginManagerImpl::AppName(const std::string &n)
 {
     name_ = n;
 }
 
-bool PluginManagerImpl::init(const std::string &conf_file)
+bool PluginManagerImpl::Init(const std::string &conf_file)
 {
     std::ifstream fs(conf_file);
     if (!fs.good()) {
@@ -71,9 +71,9 @@ bool PluginManagerImpl::init(const std::string &conf_file)
 
     assert(doc.IsObject());
 
-	auto &app_conf = doc.FindMember(name().c_str());
+	auto &app_conf = doc.FindMember(AppName().c_str());
 	if (app_conf == doc.MemberEnd()) {
-		std::cerr << "There is no app named " << name() << std::endl;
+		std::cerr << "There is no app named " << AppName() << std::endl;
 		return false;
 	}
 
@@ -82,7 +82,7 @@ bool PluginManagerImpl::init(const std::string &conf_file)
 
     for (auto it = plugins.Begin(); it != plugins.End(); ++it) {
 		std::string lib_name = it->GetString();
-        if (loadPluginLibrary(lib_name)) {
+        if (LoadPluginLibrary(lib_name)) {
             loaded_libraries_.insert(lib_name);
         } else {
             std::cerr << "Failed to load plugin " << lib_name << std::endl;
@@ -90,7 +90,7 @@ bool PluginManagerImpl::init(const std::string &conf_file)
     }
 
     for (auto &it : plugins_) {
-        if (!it.second->init())
+        if (!it.second->Init())
         {
             return false;
         }
@@ -99,10 +99,10 @@ bool PluginManagerImpl::init(const std::string &conf_file)
     return true;
 }
 
-bool PluginManagerImpl::afterInit()
+bool PluginManagerImpl::AfterInit()
 {
     for (auto &it : plugins_) {
-        if (!it.second->afterInit())
+        if (!it.second->AfterInit())
         {
             return false;
         }
@@ -110,92 +110,92 @@ bool PluginManagerImpl::afterInit()
     return true;
 }
 
-bool PluginManagerImpl::beforeShutdown()
+bool PluginManagerImpl::BeforeShutdown()
 {
     for (auto &it : plugins_) {
-        it.second->beforeShutdown();
+        it.second->BeforeShutdown();
     }
     return true;
 }
 
-bool PluginManagerImpl::shutdown()
+bool PluginManagerImpl::Shutdown()
 {
     for (auto &it : plugins_) {
-        it.second->shutdown();
+        it.second->Shutdown();
     }
 
     for (auto &it : loaded_libraries_) {
-        unloadPluginLibrary(it);
+        UnloadPluginLibrary(it);
     }
     loaded_libraries_.clear();
     return true;
 }
 
-void PluginManagerImpl::execute()
+void PluginManagerImpl::Execute()
 {
     for (auto &it : plugins_) {
-        it.second->execute();
+        it.second->Execute();
     }
 }
 
-void PluginManagerImpl::install(Plugin *plugin)
+void PluginManagerImpl::Install(Plugin *plugin)
 {
-    bool res = plugin->install();
+    bool res = plugin->Install();
     if (res) {
-        plugins_.emplace(plugin->name(), plugin);
+        plugins_.emplace(plugin->Name(), plugin);
     }
 }
 
-void PluginManagerImpl::uninstall(Plugin *plugin)
+void PluginManagerImpl::Uninstall(Plugin *plugin)
 {
-    auto it = plugins_.find(plugin->name());
+    auto it = plugins_.find(plugin->Name());
     assert(it != plugins_.end());
-    plugin->uninstall();
+    plugin->Uninstall();
     plugins_.erase(it);
 }
 
-Plugin *PluginManagerImpl::findPlugin(const std::string &name) const
+Plugin *PluginManagerImpl::FindPlugin(const std::string &name) const
 {
     auto it = plugins_.find(name);
     return it != plugins_.end() ? it->second : nullptr;
 }
 
-void PluginManagerImpl::registerModule(const std::string &name, Module *module)
+void PluginManagerImpl::RegisterModule(const std::string &name, Module *module)
 {
     modules_.emplace(name, module);
 }
 
-void PluginManagerImpl::unregisterModule(const std::string &name)
+void PluginManagerImpl::UnregisterModule(const std::string &name)
 {
     modules_.erase(name);
 }
 
-Module *PluginManagerImpl::findModule(const std::string &name) const
+Module *PluginManagerImpl::FindModule(const std::string &name) const
 {
     auto it = modules_.find(name);
     return it != modules_.end() ? it->second : nullptr;
 }
 
-bool PluginManagerImpl::loadPluginLibrary(const std::string &lib_name)
+bool PluginManagerImpl::LoadPluginLibrary(const std::string &lib_name)
 {
-    DynLib *lib = dynlib_manager_->load(lib_name);
+    DynLib *lib = dynlib_manager_->Load(lib_name);
     if (!lib) {
         return false;
     }
-    PluginInstallFunc func = (PluginInstallFunc)lib->getSymbol("installPlugin");
+    PluginInstallFunc func = (PluginInstallFunc)lib->GetSymbol("InstallPlugin");
     assert(func != NULL);
     func(this);
     return true;
 }
 
-bool PluginManagerImpl::unloadPluginLibrary(const std::string &lib_name)
+bool PluginManagerImpl::UnloadPluginLibrary(const std::string &lib_name)
 {
-    DynLib *lib = dynlib_manager_->get(lib_name);
+    DynLib *lib = dynlib_manager_->Get(lib_name);
     assert(lib != NULL);
-    PluginUninstallFunc func = (PluginUninstallFunc)lib->getSymbol("uninstallPlugin");
+    PluginUninstallFunc func = (PluginUninstallFunc)lib->GetSymbol("UninstallPlugin");
     assert(func != NULL);
     func(this);
-    dynlib_manager_->unload(lib_name);
+    dynlib_manager_->Unload(lib_name);
     return true;
 }
 

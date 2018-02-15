@@ -24,8 +24,8 @@ class PluginBar : public Plugin
 public:
     PluginBar(PluginManager *pm);
     ~PluginBar();
-    bool install() override;
-    bool uninstall() override;
+    bool Install() override;
+    bool Uninstall() override;
 };
 
 class ModuleBar : public Module

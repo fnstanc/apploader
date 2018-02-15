@@ -44,45 +44,45 @@ public:
     PluginManager(const PluginManager &) = delete;
     PluginManager &operator=(const PluginManager &) = delete;
 
-    virtual void appid(int id) = 0;
-    virtual int appid() = 0;
-    virtual const std::string &name() = 0;
-    virtual void name(const std::string &n) = 0;
+    virtual void AppID(int id) = 0;
+    virtual int AppID() = 0;
+    virtual const std::string &AppName() = 0;
+    virtual void AppName(const std::string &n) = 0;
 
-    virtual bool init(const std::string &plugin_conf_file) = 0;
-    virtual bool afterInit() = 0;
-    virtual bool beforeShutdown() = 0;
-    virtual bool shutdown() = 0;
-    virtual void execute() = 0;
+    virtual bool Init(const std::string &plugin_conf_file) = 0;
+    virtual bool AfterInit() = 0;
+    virtual bool BeforeShutdown() = 0;
+    virtual bool Shutdown() = 0;
+    virtual void Execute() = 0;
 
     // for plugin library load/unload
-    virtual void install(Plugin *plugin) = 0;
-    virtual void uninstall(Plugin *plugin) = 0;
-    virtual Plugin *findPlugin(const std::string &name) const = 0;
+    virtual void Install(Plugin *plugin) = 0;
+    virtual void Uninstall(Plugin *plugin) = 0;
+    virtual Plugin *FindPlugin(const std::string &name) const = 0;
 
-    virtual void registerModule(const std::string &name, Module *module) = 0;
-    virtual void unregisterModule(const std::string &name) = 0;
-    virtual Module *findModule(const std::string &name) const = 0;
+    virtual void RegisterModule(const std::string &name, Module *module) = 0;
+    virtual void UnregisterModule(const std::string &name) = 0;
+    virtual Module *FindModule(const std::string &name) const = 0;
 
     template <typename T>
-    void registerModule(T *module)
+    void RegisterModule(T *module)
     {
         CHECK_DERIVES(T, Module);
-        registerModule(typeid(T).name(), module);
+        RegisterModule(typeid(T).name(), module);
     }
 
     template <typename T>
-    void unregisterModule()
+    void UnregisterModule()
     {
-        unregisterModule(typeid(T).name());
+        UnregisterModule(typeid(T).name());
     }
 
     template <typename T>
-    T *findModule() const
+    T *FindModule() const
     {
         CHECK_DERIVES(T, Module);
         const char * name = typeid(T).name();
-        return (T *)findModule(name);
+        return (T *)FindModule(name);
     }
 };
 

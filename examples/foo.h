@@ -24,16 +24,16 @@ class PluginFoo : public Plugin
 public:
     PluginFoo(PluginManager *pm);
     ~PluginFoo();
-    bool install() override;
-    bool uninstall() override;
+    bool Install() override;
+    bool Uninstall() override;
 };
 
 class ModuleFoo : public Module
 {
 public:
     ModuleFoo(Plugin *plugin) { plugin_ = plugin; }
-    bool afterInit() override;
-    void execute() override;
+    bool AfterInit() override;
+    void Execute() override;
 private:
 	bool executed{false};
 };

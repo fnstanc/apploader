@@ -41,10 +41,10 @@ DynLib::DynLib(const std::string &lib_name) :
 
 DynLib::~DynLib()
 {
-    unload();
+    Unload();
 }
 
-bool DynLib::load()
+bool DynLib::Load()
 {
     assert(handle_ == NULL);
     printf("Loading library %s\n", filename_.c_str());
@@ -52,7 +52,7 @@ bool DynLib::load()
     return NULL != handle_;
 }
 
-void DynLib::unload()
+void DynLib::Unload()
 {
     if (handle_) {
         printf("Unloading library %s\n", filename_.c_str());
@@ -61,14 +61,14 @@ void DynLib::unload()
     }
 }
 
-void *DynLib::getSymbol(const char *sym) const throw()
+void *DynLib::GetSymbol(const char *sym) const throw()
 {
     assert(sym != NULL);
     assert(handle_ != NULL);
     return DYNLIB_GETSYM(handle_, sym);
 }
 
-const std::string &DynLib::filename() const
+const std::string &DynLib::Filename() const
 {
     return filename_;
 }
@@ -76,16 +76,16 @@ const std::string &DynLib::filename() const
 
 DynLibManager::~DynLibManager()
 {
-    unloadAll();
+    UnloadAll();
 }
 
-DynLib * DynLibManager::load(const std::string &lib_name)
+DynLib * DynLibManager::Load(const std::string &lib_name)
 {
     auto iter = dynlibs_.find(lib_name);
     if (dynlibs_.end() != iter)
         return iter->second;
     DynLib *lib = new DynLib(lib_name);
-    if (!lib->load()) {
+    if (!lib->Load()) {
         delete lib;
         return NULL;
     }
@@ -93,26 +93,26 @@ DynLib * DynLibManager::load(const std::string &lib_name)
     return lib;
 }
 
-void DynLibManager::unload(const std::string &lib_name)
+void DynLibManager::Unload(const std::string &lib_name)
 {
     auto iter = dynlibs_.find(lib_name);
     if (dynlibs_.end() != iter) {
-        iter->second->unload();
+        iter->second->Unload();
         delete iter->second;
         dynlibs_.erase(iter);
     }
 }
 
-void DynLibManager::unloadAll()
+void DynLibManager::UnloadAll()
 {
     for (auto &iter : dynlibs_) {
-        iter.second->unload();
+        iter.second->Unload();
         delete iter.second;
     }
     dynlibs_.clear();
 }
 
-DynLib *DynLibManager::get(const std::string &lib_name) const
+DynLib *DynLibManager::Get(const std::string &lib_name) const
 {
     auto iter = dynlibs_.find(lib_name);
     return iter != dynlibs_.end() ? iter->second : NULL;

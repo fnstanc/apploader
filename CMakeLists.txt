@@ -30,9 +30,8 @@ add_subdirectory(external/getopt)
 
 file(GLOB HDRS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" include/yatl/*.h include/yatl/*.hpp)
 file(GLOB SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" src/*.cpp src/*.cc src/*.h src/*.hpp)
-file(GLOB RAPIDJSON_SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" include/rapidjson/*.h)
 
-add_executable(apploader ${HDRS} ${SRCS} ${RAPIDJSON_SRCS})
+add_executable(apploader ${HDRS} ${SRCS})
 set(APPLOADER_DEPS getopt)
 if (LINUX)
     list(APPEND APPLOADER_DEPS dl)
