@@ -23,16 +23,13 @@ endif()
 
 include_directories(
     ${PROJECT_SOURCE_DIR}/include
-    ${PROJECT_SOURCE_DIR}/external/getopt
     )
-
-add_subdirectory(external/getopt)
 
 file(GLOB HDRS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" include/*.h include/*.hpp)
 file(GLOB SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" src/*.cpp src/*.cc src/*.h src/*.hpp)
 
 add_executable(apploader ${HDRS} ${SRCS})
-set(APPLOADER_DEPS getopt)
+set(APPLOADER_DEPS "")
 if (LINUX)
     list(APPEND APPLOADER_DEPS dl)
 endif()

@@ -6,19 +6,13 @@
  */
 
 #include "plugin_manager_impl.h"
-#include "getopt.h"
+#include "optparse.h"
 #include <string>
 #include <cstdio>
 
 #if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
 #endif
-
-void usage()
-{
-    const char *u = "usage: apploader [-n appname] -c path/to/config\r\n";
-    fprintf(stdout, u);
-}
 
 void setConsoleTitle(const std::string &title)
 {
@@ -33,45 +27,36 @@ bool exitApp = false;
 int main(int argc, char *argv[])
 {
     using namespace uf;
-    PluginManagerImpl pm;
 
-    std::string conf_file;
-    std::string app_name = "AppLoader";
+    auto parser = optparse::OptionParser().description("uf apploader - a plugin base app framework.");
+    parser.usage("%prog [options] APPNAME /path/to/config");
+    parser.add_option("-i", "--id").dest("appid")
+          .metavar("APPID").help("set an id to this app");
+    const optparse::Values options = parser.parse_args(argc, argv);
+    auto args = parser.args();
+
+    if (args.size() != 2) {
+        parser.print_usage();
+        return -1;
+    }
+
+    const std::string &conf_file = args[1];
+    const std::string &app_name = args[0];
     std::string str_app_id = "0";
-    int ch;
-    while ((ch = getopt(argc, argv, "n:c:h")) != -1) {
-        switch (ch) {
-            case 'c': {
-                conf_file = optarg;
-            }
-            break;
-            case 'h': {
-                usage();
-                return 0;
-            }
-            case 'n': {
-                app_name = optarg;
-            }
-            break;
-            default: {
-                fprintf(stderr, "Unknown arg %d.\n", ch);
-                return -1;
-            }
-        }
+    
+    if (options.is_set("appid")) {
+        str_app_id = options["appid"];
     }
 
-    if (conf_file.empty())
-    {
-        fprintf(stderr, "Need a config file.\n");
-        usage();
-        return -2;
-    }
-
-    int id = std::atoi(str_app_id.c_str());
-    pm.AppID(id);
+    PluginManagerImpl pm;
     pm.AppName(app_name);
 
-    std::string title = app_name + "-" + str_app_id;
+    std::string title = app_name;
+    if (!str_app_id.empty()) {
+        title += "-" + str_app_id;
+        int id = std::atoi(str_app_id.c_str());
+        pm.AppID(id);
+    }
     setConsoleTitle(title);
 
     if (!pm.Init(conf_file)) {
