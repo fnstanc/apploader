@@ -21,6 +21,7 @@ Config file is wirten in json.
 * plugins: a list of plugin your app needs.
 * assets: path which your app will load from.
 
+
     {
         "APPNAME1" : {
             "plugins" : ["shared_lib_name1", "shared_lib_name2", ...],
