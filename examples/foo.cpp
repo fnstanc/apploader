@@ -7,23 +7,23 @@
 
 #include "foo.h"
 #include "bar.h"
-#include "yatl/plugin_manager.h"
+#include "plugin_manager.h"
 #include <cstdio>
 #include <iostream>
 
-YATL_API void InstallPlugin(yatl::PluginManager *pm)
+YATL_API void InstallPlugin(uf::PluginManager *pm)
 {
-    CREATE_PLUGIN(pm, yatl::PluginFoo);
+    CREATE_PLUGIN(pm, uf::PluginFoo);
 }
 
-YATL_API void UninstallPlugin(yatl::PluginManager *pm)
+YATL_API void UninstallPlugin(uf::PluginManager *pm)
 {
-    DESTROY_PLUGIN(pm, yatl::PluginFoo);
+    DESTROY_PLUGIN(pm, uf::PluginFoo);
 }
 
-namespace yatl {
+namespace uf {
 
-PluginFoo::PluginFoo(PluginManager *pm) : Plugin(CLASS_NAME(yatl::PluginFoo), pm)
+PluginFoo::PluginFoo(PluginManager *pm) : Plugin(CLASS_NAME(uf::PluginFoo), pm)
 {
 }
 

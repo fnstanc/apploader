@@ -12,7 +12,7 @@
 #include <list>
 #include <algorithm>
 
-namespace yatl {
+namespace uf {
 
 class PluginManager;
 class Plugin;
@@ -147,6 +147,6 @@ protected:
     } while(0)
 
 #define CLASS_NAME(Class) typeid(Class).name()
-} // namespace yatl
+} // namespace uf
 
 #endif

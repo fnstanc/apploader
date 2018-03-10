@@ -6,23 +6,23 @@
  */
 
 #include "bar.h"
-#include "yatl/plugin_manager.h"
+#include "plugin_manager.h"
 #include <cstdio>
 #include <iostream>
 
-YATL_API void InstallPlugin(yatl::PluginManager *pm)
+YATL_API void InstallPlugin(uf::PluginManager *pm)
 {
-    CREATE_PLUGIN(pm, yatl::PluginBar);
+    CREATE_PLUGIN(pm, uf::PluginBar);
 }
 
-YATL_API void UninstallPlugin(yatl::PluginManager *pm)
+YATL_API void UninstallPlugin(uf::PluginManager *pm)
 {
-    DESTROY_PLUGIN(pm, yatl::PluginBar);
+    DESTROY_PLUGIN(pm, uf::PluginBar);
 }
 
-namespace yatl {
+namespace uf {
 
-PluginBar::PluginBar(PluginManager *pm) : Plugin(CLASS_NAME(yatl::PluginBar), pm)
+PluginBar::PluginBar(PluginManager *pm) : Plugin(CLASS_NAME(uf::PluginBar), pm)
 {
 }
 

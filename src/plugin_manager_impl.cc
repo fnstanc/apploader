@@ -6,7 +6,7 @@
  */
 
 #include "plugin_manager_impl.h"
-#include "yatl/plugin.h"
+#include "plugin.h"
 #include "rapidjson/rapidjson.h"
 #include "rapidjson/document.h"
 #include "rapidjson/istreamwrapper.h"
@@ -15,7 +15,7 @@
 #include <fstream>
 #include <iostream>
 
-namespace yatl {
+namespace uf {
 
 PluginManagerImpl::PluginManagerImpl() :
     dynlib_manager_(new DynLibManager()),

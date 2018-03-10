@@ -8,14 +8,14 @@
 #ifndef _PLUGIN_MANAGER_IMPL_H
 #define _PLUGIN_MANAGER_IMPL_H
 
-#include "yatl/plugin_manager.h"
+#include "plugin_manager.h"
 #include <memory>
 #include <string>
 #include <set>
 #include <map>
 #include <cassert>
 
-namespace yatl {
+namespace uf {
 
 class DynLibManager;
 class Module;
@@ -65,5 +65,5 @@ private:
     std::string name_;
 };
 
-} // namespace yatl
+} // namespace uf
 #endif

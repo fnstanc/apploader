@@ -32,7 +32,7 @@ void setConsoleTitle(const std::string &title)
 bool exitApp = false;
 int main(int argc, char *argv[])
 {
-    using namespace yatl;
+    using namespace uf;
     PluginManagerImpl pm;
 
     std::string conf_file;

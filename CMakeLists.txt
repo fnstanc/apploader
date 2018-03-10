@@ -1,4 +1,4 @@
-project (yatl_apploader)
+project (uf_apploader)
 cmake_minimum_required (VERSION 2.8)
 
 include(CheckCXXCompilerFlag)
@@ -28,7 +28,7 @@ include_directories(
 
 add_subdirectory(external/getopt)
 
-file(GLOB HDRS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" include/yatl/*.h include/yatl/*.hpp)
+file(GLOB HDRS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" include/*.h include/*.hpp)
 file(GLOB SRCS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" src/*.cpp src/*.cc src/*.h src/*.hpp)
 
 add_executable(apploader ${HDRS} ${SRCS})

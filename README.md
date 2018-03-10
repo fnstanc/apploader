@@ -20,4 +20,4 @@ A plugin based app framework for C++.
 
 #Run
 
-    apploader -c path/to/config_file
+    apploader -n appname -c path/to/config_file

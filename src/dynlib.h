@@ -11,7 +11,7 @@
 #include <string>
 #include <map>
 
-namespace yatl {
+namespace uf {
 
 class DynLib
 {
@@ -51,6 +51,6 @@ private:
     DynLibs dynlibs_;
 }; // class DynLibManager
 
-} // namespace yatl
+} // namespace uf
 
 #endif

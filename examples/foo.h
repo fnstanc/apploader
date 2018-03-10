@@ -14,9 +14,9 @@
 #define YATL_API extern "C"
 #endif
 
-#include "yatl/plugin.h"
+#include "plugin.h"
 
-namespace yatl {
+namespace uf {
 class PluginManager;
 
 class PluginFoo : public Plugin

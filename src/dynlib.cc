@@ -23,7 +23,7 @@
 #endif
 
 
-namespace yatl {
+namespace uf {
 
 DynLib::DynLib(const std::string &lib_name) :
     handle_(NULL)
@@ -118,4 +118,4 @@ DynLib *DynLibManager::Get(const std::string &lib_name) const
     return iter != dynlibs_.end() ? iter->second : NULL;
 }
 
-} // namespace yatl
+} // namespace uf

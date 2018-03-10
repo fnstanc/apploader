@@ -12,7 +12,7 @@
 #include <cassert>
 #include <typeinfo>
 
-namespace yatl {
+namespace uf {
 
 class Module;
 class Plugin;
@@ -34,7 +34,7 @@ struct IsBaseOf
 } // namespace internal
 
 #define CHECK_DERIVES(T, Base) \
-    static_assert(yatl::internal::IsBaseOf<T, Base>::Value, "T is not derived from Base.")
+    static_assert(uf::internal::IsBaseOf<T, Base>::Value, "T is not derived from Base.")
 
 class PluginManager
 {
@@ -89,5 +89,5 @@ public:
 typedef void (*PluginInstallFunc)(PluginManager *);
 typedef void (*PluginUninstallFunc)(PluginManager *);
 
-} // namespace yatl
+} // namespace uf
 #endif
