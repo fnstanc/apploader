@@ -10,20 +10,37 @@
 #include <string>
 #include <cstdio>
 
+bool exitApp = false;
+
 #if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
-#endif
 
-void setConsoleTitle(const std::string &title)
+BOOL WINAPI HandlerRoutine(DWORD dwCtrlType)
 {
-#if defined(_WIN32) || defined(_WIN64)
-    SetConsoleTitle(title.c_str());
-#else
-
-#endif
+    if (CTRL_C_EVENT == dwCtrlType)
+    {
+        fprintf(stdout, "<CTRL-C> received\n");
+        exitApp = true;
+    }
+    return TRUE;
 }
 
-bool exitApp = false;
+void SetupSignalHandler()
+{
+    SetConsoleCtrlHandler(HandlerRoutine, TRUE);
+}
+#else
+void SetupSignalHandler()
+{
+
+}
+
+void SetConsoleTitle(const char *title)
+{
+
+}
+#endif
+
 int main(int argc, char *argv[])
 {
     using namespace uf;
@@ -42,7 +59,7 @@ int main(int argc, char *argv[])
 
     const std::string &conf_file = args[1];
     const std::string &app_name = args[0];
-    std::string str_app_id = "0";
+    std::string str_app_id;
     
     if (options.is_set("appid")) {
         str_app_id = options["appid"];
@@ -57,7 +74,9 @@ int main(int argc, char *argv[])
         int id = std::atoi(str_app_id.c_str());
         pm.AppID(id);
     }
-    setConsoleTitle(title);
+
+    SetConsoleTitle(title.c_str());
+    SetupSignalHandler();
 
     if (!pm.Init(conf_file)) {
         assert(false);
