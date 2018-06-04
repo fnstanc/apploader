@@ -9,6 +9,7 @@
 #include "optparse.h"
 #include <string>
 #include <cstdio>
+#include <thread>
 
 bool exitApp = false;
 
@@ -86,6 +87,7 @@ int main(int argc, char *argv[])
 
     while (!exitApp) {
         pm.Execute();
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 
     pm.BeforeShutdown();
